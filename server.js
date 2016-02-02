@@ -3,8 +3,28 @@ var ObjectID = require("bson-objectid");
 var express = require('express');
 var app = express();
 
+var modifiers = ["private", "public", "protected", "static", "final"];
+
+var isModifier = function(string){
+	return modifiers.indexOf(string.trim()) > -1;
+};
+
+var convertString = function(string){
+	var finalString = "";
+	for(var i = 0; i < string.length; ++i){
+		var currentChar = string[i];
+		if(currentChar == currentChar.toUpperCase()){
+			finalString +="_" + currentChar.toUpperCase();
+		}
+		else{
+			finalString +=currentChar.toUpperCase();
+		}
+	}
+	return finalString;
+}
 
  app.use(bodyParser.json());
+ app.use(bodyParser.text());
  app.use(bodyParser.urlencoded({
      extended: true
  }));
@@ -24,6 +44,29 @@ app.get("/objectid",function(req,res){
 	res.send(ObjectID());
 });
 
+app.post("/attributes", function(req, res){
+	var cleanedData = req.body.replace(/;/g, "");
+	console.log(req.body);
+	var values = cleanedData.split(/\s+\n*/);
+
+	for(var i = 0; i < values.length; ++i){
+		if(isModifier(values[i])){
+			values.splice(i,1);
+			--i;
+		}
+	}
+
+	var result = "public static interface Fields{\n";
+	for(var i = 0; i < values.length; ++i ){
+		if(i % 2 == 1){
+			result += "\tString " + convertString(values[i]) + " = " + "\"" + values[i] + "\";\n"; 
+			convertString(values[i]);			
+		}
+	}
+	result += "}";
+	res.send(result);
+})
+
 app.get("/", function(req,res){
 	res.sendfile("webapp/index.html");
 });
@@ -38,3 +81,5 @@ app.get(/^(.+)$/, function (req, res) {
 app.listen(8080, function(){
 	console.log("Server runs on " + 8080);
 });
+
+

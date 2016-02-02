@@ -21,7 +21,21 @@ $( document ).ready(function() {
         		$("#resultHolder").val(JSON.stringify(result));
    			 }
 		});
-	});  	
+	});  
+
+	$("#sendAttributes").click(function(){
+		var attributes = $("#javaAttributesHolder").val();
+
+		$.ajax({
+			url: constants.baseurl + "/attributes",
+			type: 'POST',
+			data: attributes,
+			contentType:"text/plain",
+			success: function(result){
+				$("#attributesResultHolder").val(result);
+			}
+		})
+	})	
 });
 
 $.get(constants.baseurl + "/objectid",function(data){
