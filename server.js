@@ -47,6 +47,7 @@ app.get("/objectid",function(req,res){
 app.post("/attributes", function(req, res){
 	var cleanedData = req.body.replace(/;/g, "");
 	var cleanedData = cleanedData.replace(/\/+.*\n|\/\*+.*\n|\*+.*\n|\@+.*\n/g, "");
+	var cleanedData = cleanedData.trim();
 	var values = cleanedData.split(/\s+\n*/);
 
 	for(var i = 0; i < values.length; ++i){
