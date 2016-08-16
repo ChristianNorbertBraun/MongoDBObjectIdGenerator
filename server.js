@@ -79,8 +79,8 @@ app.get(/^(.+)$/, function (req, res) {
 });
 
 
-app.listen(8080, function(){
-	console.log("Server runs on " + 8080);
+app.listen(8000, function(){
+	console.log("Server runs on " + 8000);
 });
 
 
